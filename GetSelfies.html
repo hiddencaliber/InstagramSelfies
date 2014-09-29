@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+  This webpage provide the facilty to get the photos based on input tag
+  This uses the Instagram APIs to pull the records.
+-->
+<html>
+<head>
+<title>Instagram Tagged Photos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style type="text/css">
+body{
+  background-color: black;
+}
+  img { -webkit-transition: all .2s ease-in-out; }
+  img:hover { -webkit-transform: scale(1.5); }
+</style>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+  function search(tag){
+  var url = "https://api.instagram.com/v1/tags/" + tag + "/media/recent?callback=?&amp;client_id=23b24e7b0a7c45a59aaa4b9375c80460"
+  $.getJSON(url, toScreen);
+}
+function toScreen(dataResp){
+  console.log(dataResp);
+
+ $.each(dataResp.data, function(index, photo){
+    // The required sequence is big, small, small
+    photo = (index%3) ?  "<img src='"+ photo.images.thumbnail.url + "' />" : "<img src='"+ photo.images.low_resolution.url + "' />";
+    $('div#selfies').append(photo);
+  });
+}
+
+</script>
+<body>
+<fieldset style="border-radius: 10px;backgoung-color: black">
+<input type="text" id="searchTagText" value="Selfie"/>     
+<button id="searchBtn">Get Photos</button>
+<div id="selfies"></div>
+</fieldset>
+</body>
+<script>
+$(document).ready(function () 
+{  
+$("#searchBtn").on('click',function(){
+    var searchTag= $("#searchTagText").val();
+    if(searchTag.trim()!= "")
+        search(searchTag);
+});
+
+});
+</script>     
+</html>
